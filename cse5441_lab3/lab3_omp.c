@@ -22,10 +22,9 @@
 #include <omp.h>
 
 #define SIZE 5
-#define PRODUCER_COUNT 16
-#define CONSUMER_COUNT 15
-#define OUTPUT_THREAD_COUNT 1
-#define TOTAL_THREADS PRODUCER_COUNT+CONSUMER_COUNT+OUTPUT_THREAD_COUNT
+#define PRODUCER_COUNT 64
+#define CONSUMER_COUNT 64
+#define TOTAL_THREADS PRODUCER_COUNT+CONSUMER_COUNT
 
 uint16_t transformA(uint16_t input_val);
 uint16_t transformB(uint16_t input_val);
@@ -74,7 +73,7 @@ void addItemsToJobQueue(struct State *state, struct wrapper_work_entry itemsToAd
 
         #pragma omp critical (buffer_access)
         {
-            printf("Producer thread %d writing to queue\n", omp_get_thread_num());
+            // printf("Producer thread %d writing to queue\n", omp_get_thread_num());
             state->items.readIndex = itemsToAdd.readIndex;
             for (int i = 0; i < numItemsToAdd; i++)                     // add items to queue
             {
@@ -94,7 +93,7 @@ void getItemsFromJobQueue(struct State *state, struct wrapper_work_entry *itemsF
         *numItemsFound = state->count;
         if (state->count > 0)
         {
-            printf("consumer thread %d reading from queue\n", omp_get_thread_num());
+            // printf("consumer thread %d reading from queue\n", omp_get_thread_num());
             itemsFound->readIndex = state->items.readIndex;
             for (int i = 0; i < *numItemsFound; i++)                    // read items from queue
             {
@@ -103,6 +102,19 @@ void getItemsFromJobQueue(struct State *state, struct wrapper_work_entry *itemsF
                 state->count--;
             }
         }
+    }
+}
+
+void addToDisplayQueue(struct State *state, char *block_output, struct wrapper_work_entry tempQueue)
+{
+    #pragma omp critical (state_output_queue)
+    {
+        // printf("Consumer thread %d added to output queue\n", omp_get_thread_num());
+        struct output_queue *out_queue = (struct output_queue *)malloc(sizeof(struct output_queue));
+        strcpy(out_queue->output, block_output);
+        out_queue->next = state->out_queue;
+        out_queue->index = tempQueue.readIndex;
+        state->out_queue = out_queue;
     }
 }
 
@@ -205,15 +217,7 @@ void consumer(struct State *state)
                 else
                     strcat(block_output, output);
             }
-            #pragma omp critical (state_output_queue)
-            {
-                printf("Consumer thread %d added to output queue\n", omp_get_thread_num());
-                struct output_queue *out_queue = (struct output_queue *)malloc(sizeof(struct output_queue));
-                strcpy(out_queue->output, block_output);
-                out_queue->next = state->out_queue;
-                out_queue->index = tempQueue.readIndex;
-                state->out_queue = out_queue;
-            }
+            addToDisplayQueue(state, block_output, tempQueue);
         }
     }
 
@@ -225,9 +229,9 @@ void consumer(struct State *state)
     // printf("comsumer thread %d terminated\n", omp_get_thread_num());
 }
 
-void outputHandler(struct State *state)
+void displayOutput(struct State *state)
 {
-    while (!(state->numProducersAlive == 0 && state->numConsumersAlive == 0 && state->stopProducers) || state->out_queue != NULL)
+    while (state->out_queue != NULL)
     {
         struct output_queue *prev = NULL;
         struct output_queue *current = state->out_queue;
@@ -235,18 +239,15 @@ void outputHandler(struct State *state)
         {
             if (current->index == state->currentOutIndex)
             {
-                printf("Output thread %d displayed item\n", omp_get_thread_num());
-                //printf("%s", current->output);
-                #pragma omp critical (state_output_queue)
-                {
-                    state->currentOutIndex++;
-                    if (prev == NULL)
-                        state->out_queue = current->next;
-                    else
-                        prev->next = current->next;
-                    free(current);
-                    current = NULL;
-                }
+                // printf("Output thread %d displayed item\n", omp_get_thread_num());
+                printf("%s", current->output);
+                state->currentOutIndex++;
+                if (prev == NULL)
+                    state->out_queue = current->next;
+                else
+                    prev->next = current->next;
+                free(current);
+                current = NULL;
             }
             else
             {
@@ -277,15 +278,12 @@ int main()
     initializeState(&state);
     int thread_id;
 
-    omp_set_num_threads(TOTAL_THREADS); //Set the number of threads
-    #pragma omp parallel private(thread_id)
+    #pragma omp parallel private(thread_id) shared(state) num_threads(TOTAL_THREADS)
     {
         thread_id = omp_get_thread_num();
         if (omp_get_num_threads() == TOTAL_THREADS)
         {
-            if (thread_id == 0)
-                outputHandler(&state);
-            else if (thread_id > 0 && thread_id <= PRODUCER_COUNT)
+            if (thread_id %2 == 0)
                 producer(&state);
             else
                 consumer(&state);
@@ -297,6 +295,7 @@ int main()
         }
     }
 
+    displayOutput(&state);    
     printf("Total producer execution time using time(2) = %f\n", state.producerTime);
     printf("Total consumer execution time using time(2) = %f\n", state.consumerTime);
 
