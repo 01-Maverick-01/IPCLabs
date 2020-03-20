@@ -1,0 +1,32 @@
+#PBS -l walltime=0:59:00
+#PBS -l nodes=1:ppn=28
+#PBS -l mem=48gb
+#PBS -N prod_cons_single_thread
+#PBS -A PAS1653
+
+export INSTANCE='PCst'
+export TEST='single_thread'
+export COMPILER='icc'
+export AOUT_BASE='lab2_pthreads'
+export RUNNAME='10000'
+export DATAFILE='/fs/project/PAS1653/PC_data_t10000'
+
+echo job started at `date`
+echo on compute node `cat $PBS_NODEFILE`
+
+cd $PBS_O_WORKDIR
+# PBS_O_WORKDIR is the directory from where qsub was launched
+cp $DATAFILE $TMPDIR
+cd $TMPDIR
+# TMPDIR is high-speed file system
+
+echo job started at `date` >>current.out
+time $PBS_O_WORKDIR/${AOUT_BASE} <$DATAFILE  >>current.out 2>&1
+# re-direction of stdin, stdout and stderr
+echo job ended at `date` >>current.out
+
+export SAVEDIR=${PBS_O_WORKDIR}'/tests/'${INSTANCE}_${TEST}_${RUNNAME}'.'${PBS_JOBID}
+mkdir ${SAVEDIR}
+mv current.out ${SAVEDIR}
+#files on TMPDIR are deleted after batch completion
+

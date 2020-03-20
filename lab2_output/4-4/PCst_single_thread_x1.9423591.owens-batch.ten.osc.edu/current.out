@@ -1,0 +1,16 @@
+job started at Fri Feb 21 01:05:55 EST 2020
+Q:0		A		7		0
+Q:1		B		29		2
+Q:2		C		123		4
+Q:3		D		503		8
+Q:4		A		23		16
+Q:0		B		63		32
+Q:1		C		63		64
+Q:2		D		411		100
+Q:3		A		207		200
+Q:4		B		287		256
+Q:0		C		639		512
+Q:1		D		535		1000
+Total producer execution time using time(2) = 1.000000
+Total consumer execution time using time(2) = 1.000000
+job ended at Fri Feb 21 01:05:56 EST 2020

@@ -1,0 +1,17 @@
+job started at Fri Feb 21 00:42:48 EST 2020
+on compute node o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381 o0381
+
+-----------------------
+Resources requested:
+nodes=1:ppn=28
+mem=48gb
+-----------------------
+Resources used:
+cput=00:00:05
+walltime=00:00:04
+mem=0.001GB
+vmem=0.000GB
+-----------------------
+Resource units charged (estimate):
+0.003 RUs
+-----------------------
