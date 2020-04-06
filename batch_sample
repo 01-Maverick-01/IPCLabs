@@ -1,10 +1,10 @@
-#PBS -l walltime=0:15:00
-#PBS -l nodes=1:ppn=28
+#PBS -l walltime=0:20:00
+#PBS -l nodes=5:ppn=28
 #PBS -l mem=48gb
 #PBS -N prod_cons_single_thread
 #PBS -A PAS1653
 
-export AOUT_BASE='lab3_omp'
+export AOUT_BASE='lab4_hierarchical'
 export RUNNAME='10000'
 export DATAFILE='/fs/project/PAS1653/PC_data_t10000'
 
@@ -18,7 +18,7 @@ cd $TMPDIR
 # TMPDIR is high-speed file system
 
 echo job started at `date` >>current.out
-time $PBS_O_WORKDIR/../../cse5441_lab3/${AOUT_BASE} <$DATAFILE  >>current.out 2>&1
+time mpirun -np 5 $PBS_O_WORKDIR/../../lab4/${AOUT_BASE} $DATAFILE  >>current.out 2>&1
 # re-direction of stdin, stdout and stderr
 echo job ended at `date` >>current.out
 
