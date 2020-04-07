@@ -18,7 +18,7 @@ cd $TMPDIR
 # TMPDIR is high-speed file system
 
 echo job started at `date` >>current.out
-time mpirun -np 5 $PBS_O_WORKDIR/../../lab4/${AOUT_BASE} $DATAFILE  >>current.out 2>&1
+time mpirun -genv KMP_AFFINITY scatter -genv MV2_ENABLE_AFFINITY 0 -n 5 $PBS_O_WORKDIR/../../lab4/${AOUT_BASE} $DATAFILE  >>current.out 2>&1
 # re-direction of stdin, stdout and stderr
 echo job ended at `date` >>current.out
 

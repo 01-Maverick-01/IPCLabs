@@ -1,6 +1,6 @@
 #!/bin/bash
 path1=./lab1_output
-path2=./lab3_output
+path2=./lab4_output
 things="2-2 4-4 8-8 16-16 32-32 64-64"
 mkdir diff
 for n in $(echo $things); do

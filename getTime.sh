@@ -1,7 +1,7 @@
 #!/bin/bash
 
-path=./lab3_output
-things="2-2 4-4 8-8 16-16 32-32 64-64"
+path=./lab4_output
+things="1-1 2-2 4-4 8-8 12-12"
 for n in $(echo $things); do
     echo $n-x1
     cat $path/$n/x1/prod_cons_single_thread.e* | grep "real"

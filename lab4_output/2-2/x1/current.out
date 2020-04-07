@@ -1,0 +1,16 @@
+job started at Mon Apr 6 16:50:07 EDT 2020
+0	A	1	4	7	1	1	0
+1	B	2	4	29	2	3	2
+2	C	3	4	123	3	1	4
+3	D	4	4	503	4	3	8
+4	A	1	4	23	1	1	16
+5	B	2	4	63	2	3	32
+6	C	3	4	63	3	1	64
+7	D	4	4	411	4	3	100
+8	A	1	4	207	1	1	200
+9	B	2	4	287	2	3	256
+10	C	3	4	639	3	1	512
+11	D	4	4	535	4	3	1000
+Total producer execution time using time(2) = 6.000000
+Total consumer execution time using time(2) = 16.000000
+job ended at Mon Apr 6 16:50:10 EDT 2020

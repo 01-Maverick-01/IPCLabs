@@ -3,7 +3,7 @@
 /*      This program implements a multi threaded version of producer-consumer problem   */
 /*      using MPI. The code is going to user 5 MPI nodes and node with Rank 0 will be   */
 /*      the master MPI node and Rank 1-4 will perform parallel transform computations.  */
-/*      Every slave node will be running 1 producer and 1 Consumer threads which will   */
+/*      Every slave node will be running 12 producer and 12 Consumer threads which will */
 /*      processing items in the nodes job queue and returning results back to master.   */
 /*                                                                                      */
 /* Name: Ishan Deep                                                                     */
@@ -26,8 +26,8 @@
 #define NUM_NODES 5                                             // total number of nodes
 #define LEADER 0                                                // rank of leader
 #define SIZE 5                                                  // common queue size
-#define PRODUCER_COUNT 4                                        // number of producer threads per slave node
-#define CONSUMER_COUNT 4                                        // number of consumer threads per slave node
+#define PRODUCER_COUNT 12                                       // number of producer threads per slave node
+#define CONSUMER_COUNT 12                                       // number of consumer threads per slave node
 #define TOTAL_THREADS PRODUCER_COUNT+CONSUMER_COUNT+1           // total number of threads per slave node (P+C+leader_thread)
 // Messages
 #define MSG_TERMINATE 0                                         // terminate message
@@ -281,7 +281,11 @@ void displayOutput(struct output_queue *outputQueue)
         {
             if (current->data.lineNumber == currentIndex)                      // display items in order the order in which they were read
             {
-                printf("Q:%d\t\t%c\t\t%hu\t\t%d\n", current->data.lineNumber%5, current->data.value.cmd, current->data.eKey, current->data.dKey);
+                // Output format: <position> <command> <p rank> <p tid> <encoded key> <c rank> <c tid> <decoded key>
+                printf("%d\t%c\t%d\t%d\t%hu\t%d\t%d\t%d\n", current->data.lineNumber, current->data.value.cmd, current->data.producerRank,
+                    current->data.producerThreadId, current->data.eKey, current->data.consumerRank, 
+                    current->data.consumerThreadId, current->data.dKey);
+                
                 currentIndex++;
                 if (prev == NULL)
                     outputQueue = current->next;
@@ -505,9 +509,9 @@ void startSlaveNode(int rank)
 // entry point
 int main(int argc, char *argv[])
 {
-    int rank;
+    int rank, provided;
     MPI_Status stat;
-    MPI_Init(&argc, &argv);
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if (rank == LEADER)
         startLeaderNode(argc, argv);
