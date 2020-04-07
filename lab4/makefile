@@ -16,7 +16,7 @@
   all: $(TARGET)
 
   $(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(TARGET).c /fs/project/PAS1653/transform_mpicc.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(TARGET).c /fs/project/PAS1653/transform.o
 
   clean:
 	$(RM) $(TARGET)

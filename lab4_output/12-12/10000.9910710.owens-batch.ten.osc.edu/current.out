@@ -1,0 +1,7 @@
+job started at Mon Apr 6 22:37:23 EDT 2020
+[proxy:0:0@o0209.ten.osc.edu] HYDU_create_process (utils/launch/launch.c:75): execvp error on file /users/PZS0622/deep24/IPCLabs/lab4_output/12-12/../../lab4/lab4_hierarchical (No such file or directory)
+[proxy:0:0@o0209.ten.osc.edu] HYDU_create_process (utils/launch/launch.c:75): execvp error on file /users/PZS0622/deep24/IPCLabs/lab4_output/12-12/../../lab4/lab4_hierarchical (No such file or directory)
+[proxy:0:0@o0209.ten.osc.edu] HYDU_create_process (utils/launch/launch.c:75): execvp error on file /users/PZS0622/deep24/IPCLabs/lab4_output/12-12/../../lab4/lab4_hierarchical (No such file or directory)
+[proxy:0:0@o0209.ten.osc.edu] HYDU_create_process (utils/launch/launch.c:75): execvp error on file /users/PZS0622/deep24/IPCLabs/lab4_output/12-12/../../lab4/lab4_hierarchical (No such file or directory)
+[proxy:0:0@o0209.ten.osc.edu] HYDU_create_process (utils/launch/launch.c:75): execvp error on file /users/PZS0622/deep24/IPCLabs/lab4_output/12-12/../../lab4/lab4_hierarchical (No such file or directory)
+job ended at Mon Apr 6 22:37:23 EDT 2020
