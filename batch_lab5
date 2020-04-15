@@ -1,0 +1,23 @@
+#PBS -l walltime=1:30:00
+#PBS -l nodes=1:ppn=28:gpus=1
+#PBS -A PAS1653
+
+module load cuda
+
+echo job started at `date`
+echo on compute node `cat $PBS_NODEFILE`
+
+cd $PBS_O_WORKDIR
+# PBS_O_WORKDIR is the directory from where qsub was launched
+echo job started at `date` >>current.out
+
+echo $PWD >>current.out
+echo cuda parallel started at `date` >>current.out
+time ./lab5_cuda  >>current.out 2>&1
+
+# re-direction of stdin, stdout and stderr
+echo job ended at `date` >>current.out
+
+mv current.out ${PBS_O_WORKDIR}'/'output_run5
+
+#files on TMPDIR are deleted after batch completion
