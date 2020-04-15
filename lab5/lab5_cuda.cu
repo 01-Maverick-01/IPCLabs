@@ -58,40 +58,6 @@ void printMatrix(float *matrix)
     }
 }
 
-// Method to compare two a square matrices of size (N X N)
-void cmpMatrix(float *firstArr, float *secondArr)
-{
-    char cell1[20], cell2[20];
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            sprintf(cell1, "%0.1f", firstArr[i*N + j]);
-            sprintf(cell2, "%0.1f", secondArr[i*N + j]);
-            if (strcmp(cell1, cell2) != 0)
-            {
-                printf("Two matrices are not equal. Array1=%s and Array2=%s at [%d][%d]\n", cell1, cell2, i, j);
-                return;
-            }
-        }
-    }
-
-    printf("Correct answer\n");
-}
-
-// Method to perform a operation square matrix of size (N X N) serially.
-void doMatrixOperationSerial(float *result, float *inputMatrix)
-{
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            for (int k = 0; k < N; k++)
-                result[i*N + j] += inputMatrix[k*N + i] * inputMatrix[k*N + j];
-        }
-    }
-}
-
 // Method to perform a operation square matrix of size (N X N) parallely using CUDA.
 __global__ void doMatrixOperation(float *result, float *inputMatrix, int n)
 {
@@ -130,13 +96,6 @@ int main()
 
     // copy final results of matrix operation from device (result array) to host (results array).
     gpuErrchk(cudaMemcpy(h_result, d_result, sizeof(float)*SIZE, cudaMemcpyDeviceToHost));
-    
-    doMatrixOperationSerial(h_resultSerial, h_inputMatrix);
-    cmpMatrix(h_result, h_resultSerial);
-    // printf("Parllel compute:\n");
-    // printMatrix(h_result);
-    // printf("Serial compute:\n");
-    // printMatrix(h_resultSerial);
 
     return(0);
 }
